@@ -1,0 +1,11 @@
+name = "whatday"
+version = "0.0.1"
+description = "A CL utility for calculating the weekday of certain dates"
+license = "GPL-3.0-or-later"
+authors = [
+	"Lukas Grassauer <lukas@grassauer.eu>",
+]
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.0.1"
+tag_format = "$version"
