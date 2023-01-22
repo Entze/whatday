@@ -289,12 +289,12 @@ def parse_args() -> argparse.Namespace:
 
 
 if __name__ == "__main__":
-    args: argparse.Namespace = parse_args()
-    today: datetime = datetime.today()
-    year: int = args.year or args.year_option or today.year
-    month: int = args.month or args.month_option or today.month
-    day: int = args.day or args.day_option or today.day
+    __args: argparse.Namespace = parse_args()
+    __today: datetime = datetime.today()
+    __year: int = __args.year or __args.year_option or __today.year
+    __month: int = __args.month or __args.month_option or __today.month
+    __day: int = __args.day or __args.day_option or __today.day
 
     # print(f"{year}-{month}-{day} is a {datetime(year, month, day).strftime('%A')}.")
 
-    main(year, month, day)
+    main(__year, __month, __day)
