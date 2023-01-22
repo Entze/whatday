@@ -78,7 +78,7 @@ def get_decade_drift(year: int) -> Tuple[int, CalculationPath]:
 
 def get_doomsday(
     year: int, month: int, day: int
-) -> Tuple[Tuple[int, int], CalculationPath]:
+) -> Tuple[MonthDayPair, CalculationPath]:
     path: MutableCalculationPath = [
         CalculationStep("Take the month and day of the date", (month, day))
     ]
@@ -183,7 +183,7 @@ def get_weekday(
 
     gap: int = day - weekday
     path.append(CalculationStep("Take the gap between the result and the day", gap))
-    weekday: int = drift + gap
+    weekday = drift + gap
     path.append(CalculationStep("Add the drift to the gap", weekday))
     weekday %= 7
     path.append(CalculationStep("Take the result mod 7", weekday))
