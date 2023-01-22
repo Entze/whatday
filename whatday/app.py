@@ -155,7 +155,7 @@ def get_weekday(century_drift: int, decade_drift: int, doomsday: MonthDayPair, d
         path.append(CalculationStep("Check if the result is after the day", weekday_is_after_day))
     assert weekday <= day, f"weekday: expected in {'{'}..{day}{'}'}, got {weekday}"
 
-    weekday_is_at_least_one_week_before_day = weekday + 7 < day
+    weekday_is_at_least_one_week_before_day = weekday + 7 <= day
     path.append(
         CalculationStep(
             "Check if the result is at least one week before the day",
@@ -165,7 +165,7 @@ def get_weekday(century_drift: int, decade_drift: int, doomsday: MonthDayPair, d
     while weekday_is_at_least_one_week_before_day:
         weekday += 7
         path.append(CalculationStep("Add 7", weekday))
-        weekday_is_at_least_one_week_before_day = weekday + 7 < day
+        weekday_is_at_least_one_week_before_day = weekday + 7 <= day
         path.append(
             CalculationStep(
                 "Check if the result is at least one week before the day",
