@@ -23,3 +23,7 @@ repos:
       exclude: ^.github/
   repo: https://github.com/jackdewinter/pymarkdown
   rev: v0.9.8
+- hooks:
+    - id: check-github-workflows
+  repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.20.0
