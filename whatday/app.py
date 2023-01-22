@@ -93,10 +93,16 @@ def get_doomsday(
     if month == 1:
         if not is_leap_year:
             doomsday = MonthDayPair(1, 3)
-            explanation = "This months doomsday is January 3rd. Mnemonic: 3 years it is on the January 3rd"
+            explanation = (
+                "This months doomsday is January 3rd."
+                " Mnemonic: 3 years it is on the January 3rd"
+            )
         else:
             doomsday = MonthDayPair(1, 4)
-            explanation = "This months doomsday is January 4th. Mnemonic: In the 4th year it is on the January 4th"
+            explanation = (
+                "This months doomsday is January 4th."
+                " Mnemonic: In the 4th year it is on the January 4th"
+            )
     elif month == 2:
         if not is_leap_year:
             doomsday = MonthDayPair(2, 28)
@@ -107,30 +113,28 @@ def get_doomsday(
         explanation += " Mnemonic: The last day of February"
     elif month % 2 == 0:
         doomsday = MonthDayPair(month, month)
-        explanation = f"This months doomsday is the {month}th of the month. Mnemonic: The {month}th of {month}"
-    elif month == 3:
-        doomsday = MonthDayPair(3, 0)
-        explanation = "This months doomsday is the 0th of March. Mnemonic: The 0th of March is the last day of February"
-    elif month == 5:
-        doomsday = MonthDayPair(5, 9)
         explanation = (
-            "This months doomsday is the 9th of May. Mnemonic: I work 9-5 at 7-11."
-        )
-    elif month == 7:
-        doomsday = MonthDayPair(7, 11)
-        explanation = (
-            "This months doomsday is the 11th of July. Mnemonic: I work 9-5 at 7-11."
-        )
-    elif month == 9:
-        doomsday = MonthDayPair(9, 5)
-        explanation = "This months doomsday is the 5th of September. Mnemonic: I work 9-5 at 7-11."
-    elif month == 11:
-        doomsday = MonthDayPair(11, 7)
-        explanation = (
-            "This months doomsday is the 7th of November. Mnemonic: I work 9-5 at 7-11."
+            f"This months doomsday is the {month}th of the month. "
+            f"Mnemonic: The {month}th of {month}"
         )
     else:
-        raise ValueError(f"month: expected in {'{'}1..12{'}'}, got {month}")
+        assert month % 2 == 1, f"month: expected odd, got {month}"
+        assert 1 <= month <= 12, f"month: expected in {'{'}1..12{'}'}, got {month}"
+        doomsdays = {3: 0, 5: 9, 7: 11, 9: 5, 11: 7}
+        months = {3: "March", 5: "May", 7: "July", 9: "September", 11: "November"}
+        mnemonics = {
+            3: "last day of February",
+            5: "9-5 at 7-11",
+            7: "9-5 at 7-11",
+            9: "9-5 at 7-11",
+            11: "9-5 at 7-11",
+        }
+        explanation = (
+            f"This months doomsday is the {doomsdays[month]}th of {months[month]}."
+            f" Mnemonic: {mnemonics[month]}"
+        )
+        doomsday = MonthDayPair(month, doomsdays[month])
+
     path.append(CalculationStep(explanation, doomsday))
     return doomsday, path
 
