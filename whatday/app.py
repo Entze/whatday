@@ -31,13 +31,13 @@ def get_century_drift(year: int) -> Tuple[int, CalculationPath]:
         path.append(CalculationStep("Check if the result is before 18", century_is_before_18))
     assert century >= 18, f"century: expected in {'{'}18..{'}'}, got {century}"
 
-    century_is_after_22 = century > 22
-    path.append(CalculationStep("Check if the century is after 22", century_is_after_22))
-    while century_is_after_22:
+    century_is_after_21 = century > 21
+    path.append(CalculationStep("Check if the century is after 21", century_is_after_21))
+    while century_is_after_21:
         century -= 4
         path.append(CalculationStep("Subtract 400 years", century))
-        century_is_after_22 = century > 22
-        path.append(CalculationStep("Check if the result is after 22", century_is_after_22))
+        century_is_after_21 = century > 21
+        path.append(CalculationStep("Check if the result is after 21", century_is_after_21))
 
     assert century <= 22, f"century: expected in {'{'}..22{'}'}, got {century}"
     assert 18 <= century <= 22, f"century: expected in {'{'}18..22{'}'}, got {century}"
