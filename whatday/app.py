@@ -1,3 +1,9 @@
+"""
+The whatday application.
+
+This application prints out the weekday of a given date and the rule-11 calculation
+path.
+"""
 import argparse
 from collections import namedtuple
 from datetime import datetime
@@ -10,6 +16,12 @@ MutableCalculationPath: TypeAlias = MutableSequence[CalculationStep]
 
 
 def get_century_drift(year: int) -> Tuple[int, CalculationPath]:
+    """
+    Get the century drift for the given year. The century drift is the first doomsday
+    of the century.
+    :param year: the year
+    :return: the century drift, the calculation path
+    """
     century: int = year // 100
     path: MutableCalculationPath = [
         CalculationStep("Take the century of the years date", century)
@@ -52,6 +64,12 @@ def get_century_drift(year: int) -> Tuple[int, CalculationPath]:
 
 
 def get_decade_drift(year: int) -> Tuple[int, CalculationPath]:
+    """
+    Get the decade drift for the given year. The decade drift is how many days the
+    decade is off from the century drift.
+    :param year: the year
+    :return: the decade drift, the calculation path
+    """
     decade: int = year % 100
     drift: int = decade
     path: MutableCalculationPath = [
@@ -79,6 +97,13 @@ def get_decade_drift(year: int) -> Tuple[int, CalculationPath]:
 def get_doomsday(
     year: int, month: int, day: int
 ) -> Tuple[MonthDayPair, CalculationPath]:
+    """
+    Get the memorable date of the doomsday for the given date.
+    :param year: the year
+    :param month: the month
+    :param day: the day
+    :return: the doomsday, the calculation path
+    """
     path: MutableCalculationPath = [
         CalculationStep("Take the month and day of the date", (month, day))
     ]
@@ -142,6 +167,15 @@ def get_doomsday(
 def get_weekday(
     century_drift: int, decade_drift: int, doomsday: MonthDayPair, day: int
 ) -> Tuple[str, CalculationPath]:
+    """
+    Get the weekday for the given date. Given the century drift, decade drift, doomsday
+    and day.
+    :param century_drift: the century drift
+    :param decade_drift: the decade drift
+    :param doomsday: the months memorable date that lands on the doomsday
+    :param day: the day of the date
+    :return: a string with the name of the weekday, the calculation path
+    """
     drift: int = (century_drift + decade_drift) % 7
     weekday: int = doomsday.day
     path: MutableCalculationPath = [CalculationStep("Take the doomsday", weekday)]
@@ -217,6 +251,13 @@ def get_weekday(
 
 
 def calculate_weekday(year: int, month: int, day: int) -> Tuple[str, CalculationPath]:
+    """
+    Calculate the weekday for the given date.
+    :param year: the year
+    :param month: the month
+    :param day: the day
+    :return: a string with the name of the weekday, the calculation path
+    """
     century_drift, path_century = get_century_drift(year)
     decade_drift, path_decade = get_decade_drift(year)
     doomsday, path_doomsday = get_doomsday(year, month, day)
@@ -230,6 +271,13 @@ def calculate_weekday(year: int, month: int, day: int) -> Tuple[str, Calculation
 
 
 def main(year: int, month: int, day: int) -> None:
+    """
+    Print the weekday for the given date and the calculation steps.
+    :param year: the year
+    :param month: the month
+    :param day: the day
+    :return: None
+    """
     weekday, path = calculate_weekday(year, month, day)
     for step in path:
         print(f"{step.explanation}: {step.value}")
@@ -237,6 +285,10 @@ def main(year: int, month: int, day: int) -> None:
 
 
 def parse_args() -> argparse.Namespace:
+    """
+    Parse the command line arguments.
+    :return: the parsed arguments
+    """
     parser = argparse.ArgumentParser(description="Get the weekday of a date.")
     parser.add_argument(
         "year",
