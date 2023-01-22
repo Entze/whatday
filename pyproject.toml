@@ -1,3 +1,4 @@
+[project]
 name = "whatday"
 version = "0.0.1"
 description = "A CL utility for calculating the weekday of certain dates"
