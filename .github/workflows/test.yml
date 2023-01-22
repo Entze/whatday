@@ -13,7 +13,7 @@ on:
       - main
 
 jobs:
-  unittest:
+  python_unittest:
     name: "Python unittest on ${{ matrix.platform }}"
     strategy:
       matrix:
