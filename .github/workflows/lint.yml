@@ -265,4 +265,4 @@ jobs:
           channel-priority: strict
           activate-environment: whatday-dev
       - run: conda info
-      - run: cz check --rev-range main~1..HEAD
+      - run: cz check --rev-range "$(git rev-list --all | tail -n 1)"..HEAD
