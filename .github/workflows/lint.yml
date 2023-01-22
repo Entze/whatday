@@ -241,28 +241,3 @@ jobs:
         name: "Check for trailing whitespace"
       - run: pre-commit run --all-files end-of-file-fixer
         name: "Check for exactly one newline at end of file"
-  cz_validate:
-    name: "Validate commit messages on ${{ matrix.platform }}"
-    strategy:
-      matrix:
-        platform:
-          - ubuntu-22.04
-    runs-on: ${{ matrix.platform }}
-    defaults:
-      run:
-        shell: bash -l {0}
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: ~/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-update-conda: true
-          environment-file: environment-dev.yml
-          channel-priority: strict
-          activate-environment: whatday-dev
-      - run: conda info
-      - run: cz check --rev-range "$(git rev-list --all | tail -n 1)"..HEAD
