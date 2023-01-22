@@ -14,7 +14,7 @@ on:
 
 jobs:
   python_pylint:
-    name: "Python pylint on ${{ matrix.platform }}"
+    name: "Lint Python with pylint on ${{ matrix.platform }}"
     strategy:
       matrix:
         platform:
@@ -39,7 +39,7 @@ jobs:
       - run: conda info
       - run: pylint --rcfile=pyproject.toml --fail-under 9 whatday
   python_format:
-    name: "Python format on ${{ matrix.platform }}"
+    name: "Check format of Python on ${{ matrix.platform }}"
     strategy:
       matrix:
         platform:
@@ -64,7 +64,7 @@ jobs:
       - run: conda info
       - run: black --check --config pyproject.toml .
   markdown_format:
-    name: "Markdown format on ${{ matrix.platform }}"
+    name: "Check format of Markdown on ${{ matrix.platform }}"
     strategy:
       matrix:
         platform:
@@ -88,3 +88,181 @@ jobs:
           activate-environment: whatday-dev
       - run: conda info
       - run: pymarkdown --config=.pymarkdown-config.json scan .
+  pre_commit_validate:
+    name: "Validate pre-commit config on ${{ matrix.platform }}"
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment-dev.yml
+          channel-priority: strict
+          activate-environment: whatday-dev
+      - run: conda info
+      - run: pre-commit validate-config
+  github_workflow_validate:
+    name: "Validate GitHub workflows on ${{ matrix.platform }}"
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment-dev.yml
+          channel-priority: strict
+          activate-environment: whatday-dev
+      - run: conda info
+      - run: pre-commit run --all-files check-github-workflows
+  python_ast:
+    name: "Validate AST of python files on ${{ matrix.platform }}"
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment-dev.yml
+          channel-priority: strict
+          activate-environment: whatday-dev
+      - run: conda info
+      - run: pre-commit run --all-files check-github-workflows
+  yaml_validate:
+    name: "Validate YAML files on ${{ matrix.platform }}"
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment-dev.yml
+          channel-priority: strict
+          activate-environment: whatday-dev
+      - run: conda info
+      - run: pre-commit run --all-files check-yaml
+  toml_validate:
+    name: "Validate TOML files on ${{ matrix.platform }}"
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment-dev.yml
+          channel-priority: strict
+          activate-environment: whatday-dev
+      - run: conda info
+      - run: pre-commit run --all-files check-toml
+  whitespace_validate:
+    name: "Validate whitespace on files on ${{ matrix.platform }}"
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment-dev.yml
+          channel-priority: strict
+          activate-environment: whatday-dev
+      - run: conda info
+      - run: pre-commit run --all-files trailing-whitespace
+        name: "Check for trailing whitespace"
+      - run: pre-commit run --all-files end-of-file-fixer
+        name: "Check for exactly one newline at end of file"
+  cz_validate:
+    name: "Validate commit messages on ${{ matrix.platform }}"
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment-dev.yml
+          channel-priority: strict
+          activate-environment: whatday-dev
+      - run: conda info
+      - run: cz check --rev-range main~1..HEAD
