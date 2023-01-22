@@ -1,0 +1,89 @@
+name: "Lint"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "whatday/"
+      - ".github/workflows/lint.yml"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  python_pylint:
+    name: "Python pylint on ${{ matrix.platform }}"
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment-dev.yml
+          channel-priority: strict
+          activate-environment: whatday-dev
+      - run: conda info
+      - run: pylint --rcfile=pyproject.toml --fail-under 9 whatday
+  python_format:
+    name: "Python format on ${{ matrix.platform }}"
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment-dev.yml
+          channel-priority: strict
+          activate-environment: whatday-dev
+      - run: conda info
+      - run: black --check --config pyproject.toml .
+  markdown_format:
+    name: "Markdown format on ${{ matrix.platform }}"
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-22.04
+    runs-on: ${{ matrix.platform }}
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ runner.os }}-conda-${{hashFiles('environment-dev.yml') }}
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          environment-file: environment-dev.yml
+          channel-priority: strict
+          activate-environment: whatday-dev
+      - run: conda info
+      - run: pymarkdown --config=.pymarkdown-config.json scan .
