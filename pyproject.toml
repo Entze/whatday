@@ -6,6 +6,8 @@ license = "GPL-3.0-or-later"
 authors = [
 	"Lukas Grassauer <lukas@grassauer.eu>",
 ]
+[tool.black]
+line-length = 120
 [tool.commitizen]
 name = "cz_conventional_commits"
 version = "0.0.1"
@@ -20,4 +22,4 @@ warn_return_any = true
 warn_unused_ignores = true
 show_error_codes = true
 [tool.pylint]
-max-line-length = 88
+max-line-length = 120

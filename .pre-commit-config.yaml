@@ -19,6 +19,7 @@ repos:
   rev: 22.12.0
 - hooks:
     - id: pymarkdown
+      args: [--config=.pymarkdown-config.json, scan, .]
       exclude: ^.github/
   repo: https://github.com/jackdewinter/pymarkdown
   rev: v0.9.8

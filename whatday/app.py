@@ -1,8 +1,7 @@
 """
 The whatday application.
 
-This application prints out the weekday of a given date and the rule-11 calculation
-path.
+This application prints out the weekday of a given date and the rule-11 calculation path.
 """
 import argparse
 from collections import namedtuple
@@ -17,49 +16,34 @@ MutableCalculationPath: TypeAlias = MutableSequence[CalculationStep]
 
 def get_century_drift(year: int) -> Tuple[int, CalculationPath]:
     """
-    Get the century drift for the given year. The century drift is the first doomsday
-    of the century.
+    Get the century drift for the given year. The century drift is the first doomsday of the century.
     :param year: the year
     :return: the century drift, the calculation path
     """
     century: int = year // 100
-    path: MutableCalculationPath = [
-        CalculationStep("Take the century of the years date", century)
-    ]
+    path: MutableCalculationPath = [CalculationStep("Take the century of the years date", century)]
     century_is_before_18 = century < 18
-    path.append(
-        CalculationStep("Check if the century is before 18", century_is_before_18)
-    )
+    path.append(CalculationStep("Check if the century is before 18", century_is_before_18))
     while century_is_before_18:
         century += 4
         path.append(CalculationStep("Add 400 years", century))
         century_is_before_18 = century < 18
-        path.append(
-            CalculationStep("Check if the result is before 18", century_is_before_18)
-        )
+        path.append(CalculationStep("Check if the result is before 18", century_is_before_18))
     assert century >= 18, f"century: expected in {'{'}18..{'}'}, got {century}"
 
     century_is_after_22 = century > 22
-    path.append(
-        CalculationStep("Check if the century is after 22", century_is_after_22)
-    )
+    path.append(CalculationStep("Check if the century is after 22", century_is_after_22))
     while century_is_after_22:
         century -= 4
         path.append(CalculationStep("Subtract 400 years", century))
         century_is_after_22 = century > 22
-        path.append(
-            CalculationStep("Check if the result is after 22", century_is_after_22)
-        )
+        path.append(CalculationStep("Check if the result is after 22", century_is_after_22))
 
     assert century <= 22, f"century: expected in {'{'}..22{'}'}, got {century}"
     assert 18 <= century <= 22, f"century: expected in {'{'}18..22{'}'}, got {century}"
     drifts = {18: 5, 19: 3, 20: 2, 21: 0}
     century_drift = drifts[century]
-    path.append(
-        CalculationStep(
-            "Get the results drift, {18: 5, 19: 3, 20: 2, 21: 0}", century_drift
-        )
-    )
+    path.append(CalculationStep("Get the results drift, {18: 5, 19: 3, 20: 2, 21: 0}", century_drift))
     return century_drift, path
 
 
@@ -72,9 +56,7 @@ def get_decade_drift(year: int) -> Tuple[int, CalculationPath]:
     """
     decade: int = year % 100
     drift: int = decade
-    path: MutableCalculationPath = [
-        CalculationStep("Take the decade of the years date", drift)
-    ]
+    path: MutableCalculationPath = [CalculationStep("Take the decade of the years date", drift)]
     drift_is_odd = drift % 2 != 0
     path.append(CalculationStep("Check if the decade is odd", drift_is_odd))
     if drift_is_odd:
@@ -94,9 +76,7 @@ def get_decade_drift(year: int) -> Tuple[int, CalculationPath]:
     return drift, path
 
 
-def get_doomsday(
-    year: int, month: int, day: int
-) -> Tuple[MonthDayPair, CalculationPath]:
+def get_doomsday(year: int, month: int, day: int) -> Tuple[MonthDayPair, CalculationPath]:
     """
     Get the memorable date of the doomsday for the given date.
     :param year: the year
@@ -104,9 +84,7 @@ def get_doomsday(
     :param day: the day
     :return: the doomsday, the calculation path
     """
-    path: MutableCalculationPath = [
-        CalculationStep("Take the month and day of the date", (month, day))
-    ]
+    path: MutableCalculationPath = [CalculationStep("Take the month and day of the date", (month, day))]
     is_leap_year: bool = year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
     if 1 <= month <= 2:
         path.append(
@@ -118,16 +96,11 @@ def get_doomsday(
     if month == 1:
         if not is_leap_year:
             doomsday = MonthDayPair(1, 3)
-            explanation = (
-                "This months doomsday is January 3rd."
-                " Mnemonic: 3 years it is on the January 3rd"
-            )
+            explanation = "This months doomsday is January 3rd. Mnemonic: 3 years it is on the January 3rd"
+
         else:
             doomsday = MonthDayPair(1, 4)
-            explanation = (
-                "This months doomsday is January 4th."
-                " Mnemonic: In the 4th year it is on the January 4th"
-            )
+            explanation = "This months doomsday is January 4th. Mnemonic: In the 4th year it is on the January 4th"
     elif month == 2:
         if not is_leap_year:
             doomsday = MonthDayPair(2, 28)
@@ -138,10 +111,7 @@ def get_doomsday(
         explanation += " Mnemonic: The last day of February"
     elif month % 2 == 0:
         doomsday = MonthDayPair(month, month)
-        explanation = (
-            f"This months doomsday is the {month}th of the month. "
-            f"Mnemonic: The {month}th of {month}"
-        )
+        explanation = f"This months doomsday is the {month}th of the month. Mnemonic: The {month}th of {month}"
     else:
         assert month % 2 == 1, f"month: expected odd, got {month}"
         assert 1 <= month <= 12, f"month: expected in {'{'}1..12{'}'}, got {month}"
@@ -155,8 +125,7 @@ def get_doomsday(
             11: "9-5 at 7-11",
         }
         explanation = (
-            f"This months doomsday is the {doomsdays[month]}th of {months[month]}."
-            f" Mnemonic: {mnemonics[month]}"
+            f"This months doomsday is the {doomsdays[month]}th of {months[month]}. Mnemonic: {mnemonics[month]}"
         )
         doomsday = MonthDayPair(month, doomsdays[month])
 
@@ -164,12 +133,9 @@ def get_doomsday(
     return doomsday, path
 
 
-def get_weekday(
-    century_drift: int, decade_drift: int, doomsday: MonthDayPair, day: int
-) -> Tuple[str, CalculationPath]:
+def get_weekday(century_drift: int, decade_drift: int, doomsday: MonthDayPair, day: int) -> Tuple[str, CalculationPath]:
     """
-    Get the weekday for the given date. Given the century drift, decade drift, doomsday
-    and day.
+    Get the weekday for the given date. Given the century drift, decade drift, doomsday and day.
     :param century_drift: the century drift
     :param decade_drift: the decade drift
     :param doomsday: the months memorable date that lands on the doomsday
@@ -181,20 +147,12 @@ def get_weekday(
     path: MutableCalculationPath = [CalculationStep("Take the doomsday", weekday)]
 
     weekday_is_after_day = weekday > day
-    path.append(
-        CalculationStep(
-            "Check if the months doomsday is after the day", weekday_is_after_day
-        )
-    )
+    path.append(CalculationStep("Check if the months doomsday is after the day", weekday_is_after_day))
     while weekday_is_after_day:
         weekday -= 7
         path.append(CalculationStep("Subtract 7", weekday))
         weekday_is_after_day = weekday > day
-        path.append(
-            CalculationStep(
-                "Check if the result is after the day", weekday_is_after_day
-            )
-        )
+        path.append(CalculationStep("Check if the result is after the day", weekday_is_after_day))
     assert weekday <= day, f"weekday: expected in {'{'}..{day}{'}'}, got {weekday}"
 
     weekday_is_at_least_one_week_before_day = weekday + 7 < day
@@ -215,9 +173,7 @@ def get_weekday(
             )
         )
 
-    assert (
-        weekday <= day <= weekday + 6
-    ), f"weekday: expected in {'{'}{weekday}..{weekday + 6}{'}'}, got {day}"
+    assert weekday <= day <= weekday + 6, f"weekday: expected in {'{'}{weekday}..{weekday + 6}{'}'}, got {day}"
 
     gap: int = day - weekday
     path.append(CalculationStep("Take the gap between the result and the day", gap))
